@@ -9,12 +9,12 @@ const Leaderboard = () => {
   const { token, user } = useAuth();
 
   useEffect(() => {
-    axios.get(`${API_URL}/api/leaderboard`, {
-  headers: { Authorization: `Bearer ${token}` }
-})
-    .then(res => { setData(res.data); setLoading(false); })
-    .catch(err => { console.error(err); setLoading(false); });
-  }, []);
+  axios.get(`${API_URL}/api/leaderboard`, {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  .then(res => { setData(res.data); setLoading(false); })
+  .catch(err => { console.error(err); setLoading(false); });
+}, [token]); // ← add token here
 
   const top3 = data.leaderboard.slice(0, 3);
   const rest = data.leaderboard.slice(3);

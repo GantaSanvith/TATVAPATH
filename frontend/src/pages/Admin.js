@@ -25,10 +25,29 @@ const Admin = () => {
   const [verseForm, setVerseForm] = useState({ scriptureId: '', adhyayaId: '', verseNumber: '', sanskrit: '', transliteration: '', meaning: '', meaningHindi: '' });
   const [questionForm, setQuestionForm] = useState({ verseId: '', question: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: 'A', points: 50 });
 
-  useEffect(() => {
-    if (!user?.isAdmin) { navigate('/'); return; }
-    loadAll();
-  }, []);
+   useEffect(() => {
+  if (!user?.isAdmin) {
+    navigate('/');
+    return;
+  }
+  const fetchAll = async () => {
+    try {
+      const [s, a, v, st] = await Promise.all([
+        axios.get(`${API}/scriptures`, { headers }),
+        axios.get(`${API}/adhyayas`, { headers }),
+        axios.get(`${API}/verses`, { headers }),
+        axios.get(`${API}/stats`, { headers }),
+      ]);
+      setScriptures(s.data);
+      setAdhyayas(a.data);
+      setVerses(v.data);
+      setStats(st.data);
+    } catch (err) {
+      showMsg('Failed to load data', 'error');
+    }
+  };
+  fetchAll();
+}, [user?.isAdmin]); // ← add this
 
   const loadAll = async () => {
     try {

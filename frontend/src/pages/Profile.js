@@ -26,7 +26,7 @@ const Profile = () => {
       setLoading(false);
     };
     fetchProfile();
-  }, []);
+  }, [token]);
 
   const handleLogout = () => { logout(); navigate('/'); };
 

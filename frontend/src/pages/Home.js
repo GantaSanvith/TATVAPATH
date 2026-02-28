@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Home.css';
-import API_URL from '../config';
+// import API_URL from '../config';
 const Home = () => {
   const { user } = useAuth();
 

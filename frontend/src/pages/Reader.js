@@ -19,22 +19,37 @@ const Reader = () => {
   const [showSuccess, setShowSuccess] = useState(false);
 
   // Fetch verses when page loads
-  useEffect(() => {
-    const fetchVerses = async () => {
-      try {
-        const res = await axios.get(
-  `${API_URL}/api/scriptures/adhyaya/${adhyayaId}/verses`,
-  { headers: { Authorization: `Bearer ${token}` } }
-);
-        setVerses(res.data);
-        if (res.data.length > 0) selectVerse(res.data[0]);
-      } catch (err) {
-        console.error(err);
+   useEffect(() => {
+  const fetchVerses = async () => {
+    try {
+      const res = await axios.get(
+        `${API_URL}/api/scriptures/adhyaya/${adhyayaId}/verses`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setVerses(res.data);
+      if (res.data.length > 0) {
+        const first = res.data[0];
+        setSelectedVerse(first);
+        // fetch questions inline here
+        setQuizLoading(true);
+        try {
+          const qRes = await axios.get(
+            `${API_URL}/api/quiz/${first._id}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          setQuestions(qRes.data);
+        } catch (err) {
+          console.error(err);
+        }
+        setQuizLoading(false);
       }
-      setLoading(false);
-    };
-    fetchVerses();
-  }, [adhyayaId]);
+    } catch (err) {
+      console.error(err);
+    }
+    setLoading(false);
+  };
+  fetchVerses();
+}, [adhyayaId, token]); // ← add both here
 
   // When user picks a verse, fetch its quiz questions
   const selectVerse = async (verse) => {
