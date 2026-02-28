@@ -19,21 +19,33 @@ const Auth = () => {
   };
 
   const handleSubmit = async () => {
-    setError('');
-    setLoading(true);
-    try {
-      const url = isLogin
-  ? `${API_URL}/api/auth/login`
-  : `${API_URL}/api/auth/register`;
+  setError('');
 
-      const res = await axios.post(url, formData);
-      login(res.data.user, res.data.token);
-      navigate('/');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Something went wrong');
-    }
-    setLoading(false);
-  };
+  // Validate fields
+  if (!formData.email || !formData.password) {
+    setError('Please fill all fields');
+    return;
+  }
+
+  if (!isLogin && !formData.name) {
+    setError('Please enter your name');
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const url = isLogin
+      ? `${API_URL}/api/auth/login`
+      : `${API_URL}/api/auth/register`;
+
+    const res = await axios.post(url, formData);
+    login(res.data.user, res.data.token);
+    navigate('/');
+  } catch (err) {
+    setError(err.response?.data?.message || 'Something went wrong');
+  }
+  setLoading(false);
+};
 
   const quotes = [
     { text: "Yoga is the journey of the self, through the self, to the self.", source: "Bhagavad Gita 6.20" },
@@ -108,11 +120,15 @@ const Auth = () => {
           </button>
 
           <div className="form-switch">
-            {isLogin ? "New seeker? " : "Already a seeker? "}
-            <span onClick={() => setIsLogin(!isLogin)}>
-              {isLogin ? 'Create account →' : 'Sign in →'}
-            </span>
-          </div>
+  {isLogin ? "New seeker? " : "Already a seeker? "}
+  <span onClick={() => {
+    setIsLogin(!isLogin);
+    setError('');
+    setFormData({ name: '', email: '', password: '' });
+  }}>
+    {isLogin ? 'Create account →' : 'Sign in →'}
+  </span>
+</div>
         </div>
       </div>
     </div>
