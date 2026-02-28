@@ -1,0 +1,21 @@
+✅ Backend Complete & Tested
+
+✅ TEST 1  — Server running
+✅ TEST 2  — Register user
+✅ TEST 3  — Login user
+✅ TEST 4  — Get scriptures
+✅ TEST 5  — Get adhyayas
+✅ TEST 6  — Get verses (protected)
+✅ TEST 7  — Get quiz questions (protected)
+✅ TEST 8  — Submit quiz answer + points
+✅ TEST 9  — Leaderboard
+✅ TEST 10 — Points updated on user✅ TEST 1  — Server running
+✅ TEST 2  — Register user
+✅ TEST 3  — Login user
+✅ TEST 4  — Get scriptures
+✅ TEST 5  — Get adhyayas
+✅ TEST 6  — Get verses (protected)
+✅ TEST 7  — Get quiz questions (protected)
+✅ TEST 8  — Submit quiz answer + points
+✅ TEST 9  — Leaderboard
+✅ TEST 10 — Points updated on user

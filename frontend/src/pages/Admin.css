@@ -1,0 +1,184 @@
+.admin-page {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+  padding-top: 72px;
+}
+
+.admin-sidebar {
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  padding: 2rem 0;
+  position: sticky;
+  top: 72px;
+  height: calc(100vh - 72px);
+  overflow-y: auto;
+}
+
+.admin-logo {
+  font-family: 'Cinzel', serif;
+  font-size: 0.9rem;
+  color: var(--gold2);
+  padding: 0 1.5rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1rem;
+  letter-spacing: 0.1em;
+}
+
+.admin-tab {
+  padding: 0.9rem 1.5rem;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  border-left: 2px solid transparent;
+  letter-spacing: 0.05em;
+}
+
+.admin-tab:hover { color: var(--cream); background: rgba(201,146,42,0.05); }
+.admin-tab.active { color: var(--gold2); border-left-color: var(--gold); background: rgba(201,146,42,0.08); }
+
+.admin-main { padding: 3rem; overflow-y: auto; }
+
+.admin-title {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: 1.5rem;
+  color: var(--gold2);
+  margin-bottom: 2rem;
+}
+
+.admin-msg {
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  border-left: 4px solid var(--gold);
+  background: rgba(201,146,42,0.1);
+  color: var(--gold2);
+}
+
+.admin-msg.error {
+  border-left-color: #e53935;
+  background: rgba(229,57,53,0.1);
+  color: #ef9a9a;
+}
+
+/* STATS */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.stat-card:hover { border-color: var(--gold); }
+.stat-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+.stat-num { font-family: 'Cinzel Decorative', cursive; font-size: 2.5rem; color: var(--gold2); line-height: 1; }
+.stat-label { font-family: 'Cinzel', serif; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; letter-spacing: 0.1em; }
+
+/* FORM */
+.admin-form { max-width: 600px; }
+
+.form-group { margin-bottom: 1.5rem; }
+
+.form-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--cream);
+  font-family: 'Crimson Pro', serif;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.form-input:focus { border-color: var(--gold); }
+.form-input option { background: var(--bg2); }
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.6;
+}
+
+.admin-btn {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--saffron) 100%);
+  border: none;
+  color: var(--bg);
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+.admin-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(201,146,42,0.4);
+}
+
+/* MANAGE */
+.manage-subtitle {
+  font-family: 'Cinzel', serif;
+  font-size: 0.9rem;
+  color: var(--gold);
+  margin-bottom: 1rem;
+  letter-spacing: 0.1em;
+}
+
+.manage-list { display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 3rem; }
+
+.manage-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  gap: 1rem;
+}
+
+.manage-item-info { flex: 1; }
+.manage-item-title { font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--cream); display: block; margin-bottom: 0.3rem; }
+.manage-item-sub { font-size: 0.82rem; color: var(--text-muted); font-style: italic; }
+
+.delete-btn {
+  background: rgba(229,57,53,0.1);
+  border: 1px solid rgba(229,57,53,0.3);
+  color: #ef9a9a;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  font-family: 'Cinzel', serif;
+}
+
+.delete-btn:hover { background: rgba(229,57,53,0.2); border-color: #e53935; }
+
+@media (max-width: 768px) {
+  .admin-page { grid-template-columns: 1fr; }
+  .admin-sidebar { position: static; height: auto; }
+}

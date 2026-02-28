@@ -1,0 +1,77 @@
+.scriptures-page { padding-top: 72px; }
+
+.page-hero {
+  padding: 4rem;
+  text-align: center;
+  background: linear-gradient(to bottom, rgba(201,146,42,0.05) 0%, transparent 100%);
+  border-bottom: 1px solid var(--border);
+}
+
+.page-hero-desc { color: var(--text-muted); font-style: italic; }
+
+.scripture-list { max-width: 900px; margin: 0 auto; padding: 4rem 2rem; }
+
+.scripture-list-item {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem 2.5rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.scripture-list-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--gold), var(--saffron));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.scripture-list-item:hover { border-color: var(--gold); background: var(--bg3); }
+.scripture-list-item:hover::before { opacity: 1; }
+
+.sli-icon { font-size: 2.5rem; flex-shrink: 0; }
+.sli-info { flex: 1; }
+.sli-name { font-family: 'Cinzel', serif; font-size: 1.2rem; color: var(--cream); margin-bottom: 0.3rem; }
+.sli-desc { color: var(--text-muted); font-style: italic; font-size: 0.95rem; }
+.sli-stats { text-align: right; }
+.sli-stat-num { font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--gold2); display: block; }
+.sli-stat-label { font-size: 0.8rem; color: var(--text-muted); }
+.lock-badge { color: var(--text-muted); font-size: 0.85rem; white-space: nowrap; }
+
+.adhyaya-list-page { max-width: 1100px; margin: 0 auto; padding: 3rem 4rem; }
+.back-btn {
+  background: none; border: 1px solid var(--border); color: var(--gold);
+  padding: 0.6rem 1.2rem; font-family: 'Cinzel', serif; font-size: 0.8rem;
+  margin-bottom: 2rem; cursor: pointer; transition: all 0.3s;
+}
+.back-btn:hover { background: var(--bg2); }
+
+.adhyaya-title {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: 2rem; color: var(--gold2); margin-bottom: 2rem;
+}
+
+.adhyaya-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.adhyaya-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  padding: 2rem; cursor: pointer; transition: all 0.3s;
+}
+
+.adhyaya-card:hover { border-color: var(--gold); transform: translateY(-3px); }
+.adhyaya-num { font-family: 'Cinzel', serif; font-size: 0.75rem; color: var(--saffron); letter-spacing: 0.2em; margin-bottom: 0.5rem; }
+.adhyaya-name { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--cream); margin-bottom: 0.5rem; }
+.adhyaya-desc { color: var(--text-muted); font-size: 0.9rem; font-style: italic; margin-bottom: 1rem; }
+.adhyaya-verses { font-family: 'Cinzel', serif; font-size: 0.75rem; color: var(--gold); }

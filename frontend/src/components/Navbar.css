@@ -1,0 +1,67 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  padding: 0 4rem;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(10,8,5,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: 1.3rem;
+  color: var(--gold2);
+  letter-spacing: 0.05em;
+}
+
+.nav-logo span { color: var(--saffron); }
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.nav-links a {
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cream2);
+  transition: color 0.3s;
+}
+
+.nav-links a:hover { color: var(--gold2); }
+
+.nav-btn {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.6rem 1.5rem;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold2);
+  transition: all 0.3s;
+}
+
+.nav-btn:hover {
+  background: var(--gold);
+  color: var(--bg);
+}
+
+.nav-btn-fill {
+  background: var(--gold);
+  color: var(--bg) !important;
+}
+
+.nav-btn-fill:hover {
+  background: var(--gold2);
+  border-color: var(--gold2);
+}

@@ -1,0 +1,61 @@
+.leaderboard-page { padding-top: 72px; }
+
+.leaderboard-section { max-width: 800px; margin: 0 auto; padding: 3rem 2rem; }
+
+.my-rank-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 1rem;
+}
+.my-rank-badge span { color: var(--gold2); font-size: 1.2rem; }
+
+.lb-podium {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr 1fr;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  align-items: end;
+}
+
+.lb-podium-item {
+  text-align: center;
+  padding: 2rem 1rem 1.5rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+}
+
+.lb-podium-item.first {
+  background: linear-gradient(180deg, rgba(201,146,42,0.12) 0%, var(--bg2) 100%);
+  border-color: var(--gold);
+}
+
+.lb-rank-icon { font-size: 2rem; display: block; margin-bottom: 0.5rem; }
+
+.lb-avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--saffron));
+  margin: 0 auto 0.8rem;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif; font-size: 1.2rem; color: var(--bg); font-weight: 700;
+}
+
+.lb-avatar.large {
+  width: 68px; height: 68px; font-size: 1.5rem;
+  box-shadow: 0 0 30px rgba(201,146,42,0.4);
+}
+
+.lb-name { font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--cream); margin-bottom: 0.3rem; }
+.lb-points { font-family: 'Cinzel Decorative', cursive; font-size: 1.3rem; color: var(--gold2); }
+.lb-streak { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.3rem; }
+
+.lb-table { width: 100%; border-collapse: collapse; }
+.lb-table th {
+  font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.15em;
+  color: var(--gold); padding: 1rem 1.2rem; border-bottom: 2px solid var(--border2);
+  text-align: left;
+}
+.lb-table td { padding: 1rem 1.2rem; font-size: 0.95rem; border-bottom: 1px solid var(--border); }
+.lb-table td:last-child { font-family: 'Cinzel', serif; color: var(--gold2); }
+.lb-table tr:hover { background: rgba(201,146,42,0.05); }
+.lb-you td { color: var(--gold2) !important; background: rgba(201,146,42,0.08); }

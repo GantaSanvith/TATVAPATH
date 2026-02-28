@@ -1,0 +1,11 @@
+ The 5 Phases
+Phase 1 — Project Setup (Foundation)
+Setting up MERN folder structure, installing packages, connecting MongoDB
+Phase 2 — Backend (Node + Express + MongoDB) (The Brain)
+Auth system, APIs for scriptures, verses, quiz, leaderboard
+Phase 3 — Frontend (React) (The Face)
+All pages — Home, Reader, Quiz, Leaderboard, Profile
+Phase 4 — Connect Frontend + Backend (Making it Live)
+Axios API calls, JWT auth flow, protected routes
+Phase 5 — Final Polish (Ship it)
+Streak logic, points system, deployment
