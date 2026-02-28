@@ -30,7 +30,8 @@ const Navbar = () => {
         ) : (
           <>
             <Link to="/auth" className="nav-btn">Login</Link>
-            <Link to="/auth" className="nav-btn nav-btn-fill">Sign Up</Link>
+            {/* <Link to="/auth" className="nav-btn nav-btn-fill">Sign Up</Link> */}
+            <Link to="/auth" state={{ signup: true }} className="nav-btn nav-btn-fill">Sign Up</Link>
           </>
         )}
       </div>

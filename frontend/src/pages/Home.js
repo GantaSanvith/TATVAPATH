@@ -18,7 +18,7 @@ const Home = () => {
         </p>
         <div className="hero-ctas">
           <Link to="/scriptures" className="btn-primary">Explore Scriptures</Link>
-          {!user && <Link to="/auth" className="btn-secondary">Begin Journey →</Link>}
+<Link to="/auth" state={{ signup: true }} className="btn-secondary">Begin Journey →</Link>
           {user && <Link to="/scriptures" className="btn-secondary">Continue Reading →</Link>}
         </div>
         {user && (
