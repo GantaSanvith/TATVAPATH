@@ -15,10 +15,20 @@ app.use(helmet());
 
 // CORS — allow frontend to talk to backend
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: function(origin, callback) {
+    const allowedOrigins = [
+      'http://localhost:3000',
+      process.env.FRONTEND_URL,
+      process.env.FRONTEND_URL + '/'  // ← allow both with and without slash
+    ];
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true
 }));
-
 // Body parser
 app.use(express.json());
 
