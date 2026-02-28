@@ -25,7 +25,8 @@ const Admin = () => {
   const [verseForm, setVerseForm] = useState({ scriptureId: '', adhyayaId: '', verseNumber: '', sanskrit: '', transliteration: '', meaning: '', meaningHindi: '' });
   const [questionForm, setQuestionForm] = useState({ verseId: '', question: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: 'A', points: 50 });
 
-   useEffect(() => {
+   // eslint-disable-next-line react-hooks/exhaustive-deps
+useEffect(() => {
   if (!user?.isAdmin) {
     navigate('/');
     return;
@@ -47,8 +48,7 @@ const Admin = () => {
     }
   };
   fetchAll();
-}, [user?.isAdmin]); // ← add this
-
+}, []); // eslint-disable-line react-hooks/exhaustive-deps
   const loadAll = async () => {
     try {
       const [s, a, v, st] = await Promise.all([
