@@ -1,27 +1,38 @@
 .scriptures-page { padding-top: 72px; }
 
 .page-hero {
-  padding: 4rem;
+  padding: 4rem 2rem 3rem;
   text-align: center;
   background: linear-gradient(to bottom, rgba(201,146,42,0.05) 0%, transparent 100%);
   border-bottom: 1px solid var(--border);
 }
 
-.page-hero-desc { color: var(--text-muted); font-style: italic; }
+.page-hero-desc {
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
 
-.scripture-list { max-width: 900px; margin: 0 auto; padding: 4rem 2rem; }
+/* Scripture list */
+.scripture-list {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
 
 .scripture-list-item {
   display: flex;
   align-items: center;
-  gap: 2rem;
-  padding: 2rem 2.5rem;
+  gap: 1.5rem;
+  padding: 1.8rem 2rem;
   background: var(--bg2);
   border: 1px solid var(--border);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
   cursor: pointer;
   transition: all 0.3s;
   position: relative;
+  overflow: hidden;
 }
 
 .scripture-list-item::before {
@@ -34,44 +45,144 @@
   transition: opacity 0.3s;
 }
 
-.scripture-list-item:hover { border-color: var(--gold); background: var(--bg3); }
+.scripture-list-item:hover {
+  border-color: var(--gold);
+  background: var(--bg3);
+  transform: translateX(4px);
+}
+
 .scripture-list-item:hover::before { opacity: 1; }
 
-.sli-icon { font-size: 2.5rem; flex-shrink: 0; }
-.sli-info { flex: 1; }
-.sli-name { font-family: 'Cinzel', serif; font-size: 1.2rem; color: var(--cream); margin-bottom: 0.3rem; }
-.sli-desc { color: var(--text-muted); font-style: italic; font-size: 0.95rem; }
-.sli-stats { text-align: right; }
-.sli-stat-num { font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--gold2); display: block; }
-.sli-stat-label { font-size: 0.8rem; color: var(--text-muted); }
-.lock-badge { color: var(--text-muted); font-size: 0.85rem; white-space: nowrap; }
-
-.adhyaya-list-page { max-width: 1100px; margin: 0 auto; padding: 3rem 4rem; }
-.back-btn {
-  background: none; border: 1px solid var(--border); color: var(--gold);
-  padding: 0.6rem 1.2rem; font-family: 'Cinzel', serif; font-size: 0.8rem;
-  margin-bottom: 2rem; cursor: pointer; transition: all 0.3s;
+.sli-icon { font-size: 2.2rem; flex-shrink: 0; }
+.sli-info { flex: 1; min-width: 0; }
+.sli-name {
+  font-family: 'Cinzel', serif;
+  font-size: 1.1rem;
+  color: var(--cream);
+  margin-bottom: 0.3rem;
 }
-.back-btn:hover { background: var(--bg2); }
+.sli-desc {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sli-stats { text-align: right; flex-shrink: 0; }
+.sli-stat-num {
+  font-family: 'Cinzel', serif;
+  font-size: 1.4rem;
+  color: var(--gold2);
+  display: block;
+}
+.sli-stat-label { font-size: 0.75rem; color: var(--text-muted); }
+.lock-badge { color: var(--text-muted); font-size: 0.82rem; white-space: nowrap; flex-shrink: 0; }
+
+/* Adhyaya grid */
+.adhyaya-list-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.back-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--gold);
+  padding: 0.6rem 1.2rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 2rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.back-btn:hover { background: var(--bg2); border-color: var(--gold); }
 
 .adhyaya-title {
   font-family: 'Cinzel Decorative', cursive;
-  font-size: 2rem; color: var(--gold2); margin-bottom: 2rem;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  color: var(--gold2);
+  margin-bottom: 2rem;
 }
 
 .adhyaya-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.2rem;
 }
 
 .adhyaya-card {
-  background: var(--bg2); border: 1px solid var(--border);
-  padding: 2rem; cursor: pointer; transition: all 0.3s;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 1.8rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
 }
 
-.adhyaya-card:hover { border-color: var(--gold); transform: translateY(-3px); }
-.adhyaya-num { font-family: 'Cinzel', serif; font-size: 0.75rem; color: var(--saffron); letter-spacing: 0.2em; margin-bottom: 0.5rem; }
-.adhyaya-name { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--cream); margin-bottom: 0.5rem; }
-.adhyaya-desc { color: var(--text-muted); font-size: 0.9rem; font-style: italic; margin-bottom: 1rem; }
-.adhyaya-verses { font-family: 'Cinzel', serif; font-size: 0.75rem; color: var(--gold); }
+.adhyaya-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(201,146,42,0.06) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.adhyaya-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+
+.adhyaya-card:hover::after { opacity: 1; }
+
+.adhyaya-num {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  color: var(--saffron);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.adhyaya-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  color: var(--cream);
+  margin-bottom: 0.5rem;
+}
+
+.adhyaya-desc {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.adhyaya-verses {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .scripture-list { padding: 2rem 1.2rem; }
+  .scripture-list-item { padding: 1.4rem 1.2rem; gap: 1rem; }
+  .sli-desc { display: none; }
+  .adhyaya-list-page { padding: 2rem 1.2rem; }
+  .adhyaya-grid { grid-template-columns: 1fr 1fr; gap: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .adhyaya-grid { grid-template-columns: 1fr; }
+  .sli-stats { display: none; }
+}
