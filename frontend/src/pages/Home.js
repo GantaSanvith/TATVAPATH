@@ -1,34 +1,67 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Home.css';
-// import API_URL from '../config';
+
 const Home = () => {
   const { user } = useAuth();
 
   return (
     <div className="home">
+
+      {/* ── HERO ── */}
       <div className="hero">
         <div className="hero-om">ॐ</div>
         <div className="hero-eyebrow">Begin Your Sacred Journey</div>
         <h1 className="hero-title">TatvaPath</h1>
         <div className="hero-subtitle">तत्त्वपथ — The Path of Truth</div>
         <p className="hero-desc">
-          Immerse yourself in the timeless wisdom of sacred scriptures. 
+          Immerse yourself in the timeless wisdom of sacred scriptures.
           Read, listen, understand, and earn your place among the enlightened.
         </p>
+
         <div className="hero-ctas">
-          <Link to="/scriptures" className="btn-primary">Explore Scriptures</Link>
-<Link to="/auth" state={{ signup: true }} className="btn-secondary">Begin Journey →</Link>
-          {user && <Link to="/scriptures" className="btn-secondary">Continue Reading →</Link>}
+          {user ? (
+            // ── LOGGED IN buttons ──
+            <>
+              <Link to="/scriptures" className="btn-primary">Continue Reading</Link>
+              <Link to="/leaderboard" className="btn-secondary">View Leaderboard →</Link>
+            </>
+          ) : (
+            // ── LOGGED OUT buttons ──
+            <>
+              <Link to="/scriptures" className="btn-primary">Explore Scriptures</Link>
+              <Link to="/auth" state={{ signup: true }} className="btn-secondary">Begin Journey →</Link>
+            </>
+          )}
         </div>
+
         {user && (
           <div className="welcome-back">
-            🙏 Welcome back, <span>{user.name}</span>! 
-            You have <span>{user.totalPoints} points</span>
+            🙏 Welcome back, <span>{user.name}</span>! You have <span>{user.totalPoints || 0} points</span>
           </div>
         )}
       </div>
 
+      {/* ── LOGGED IN — personal stats strip ── */}
+      {user && (
+        <div className="home-stats-strip">
+          <div className="home-stat">
+            <span className="home-stat-num">{user.totalPoints || 0}</span>
+            <span className="home-stat-label">Points Earned</span>
+          </div>
+          <div className="home-stat-divider" />
+          <div className="home-stat">
+            <span className="home-stat-num">{user.currentStreak || 0} 🔥</span>
+            <span className="home-stat-label">Day Streak</span>
+          </div>
+          <div className="home-stat-divider" />
+          <div className="home-stat">
+            <Link to="/profile" className="home-stat-link">View Full Profile →</Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── HOW IT WORKS ── */}
       <div className="steps-section">
         <div className="section-label">Your Path</div>
         <h2 className="section-title">How TatvaPath Works</h2>
@@ -48,6 +81,7 @@ const Home = () => {
           ))}
         </div>
       </div>
+
     </div>
   );
 };

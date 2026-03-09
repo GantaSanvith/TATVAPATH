@@ -16,59 +16,42 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Close menu on route change
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [location]);
+  useEffect(() => { setMenuOpen(false); }, [location]);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-    setMenuOpen(false);
-  };
+  const handleLogout = () => { logout(); navigate('/'); setMenuOpen(false); };
 
   return (
     <>
       <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
-        <Link to="/" className="nav-logo">
-          <span>✦</span> TatvaPath
-        </Link>
+        <Link to="/" className="nav-logo"><span>✦</span> TatvaPath</Link>
 
-        {/* Desktop links */}
         <div className="nav-links desktop-links">
           <Link to="/" className={location.pathname === '/' ? 'active' : ''}>Home</Link>
           <Link to="/scriptures" className={location.pathname === '/scriptures' ? 'active' : ''}>Scriptures</Link>
-          {user && (
+          {user ? (
             <>
               <Link to="/leaderboard" className={location.pathname === '/leaderboard' ? 'active' : ''}>Leaderboard</Link>
               <Link to="/profile" className={location.pathname === '/profile' ? 'active' : ''}>Profile</Link>
               <button className="nav-btn danger" onClick={handleLogout}>Sign Out</button>
             </>
-          )}
-          {!user && (
+          ) : (
             <>
-              <Link to="/auth" className="nav-btn">Login</Link>
+              <Link to="/auth" state={{ signup: false }} className="nav-btn">Sign In</Link>
               <Link to="/auth" state={{ signup: true }} className="nav-btn nav-btn-fill">Sign Up</Link>
             </>
           )}
         </div>
 
-        {/* Hamburger */}
-        <button
-          className={`hamburger ${menuOpen ? 'open' : ''}`}
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
-        >
+        <button className={`hamburger ${menuOpen ? 'open' : ''}`} onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
           <span /><span /><span />
         </button>
       </nav>
 
-      {/* Mobile drawer */}
       <div className={`mobile-drawer ${menuOpen ? 'open' : ''}`}>
         <div className="mobile-drawer-inner">
           <Link to="/">Home</Link>
           <Link to="/scriptures">Scriptures</Link>
-          {user && (
+          {user ? (
             <>
               <Link to="/leaderboard">Leaderboard</Link>
               <Link to="/profile">Profile</Link>
@@ -82,21 +65,17 @@ const Navbar = () => {
               </div>
               <button className="mobile-signout" onClick={handleLogout}>Sign Out</button>
             </>
-          )}
-          {!user && (
+          ) : (
             <>
               <div className="mobile-divider" />
-              <Link to="/auth" className="mobile-cta">Login</Link>
+              <Link to="/auth" state={{ signup: false }} className="mobile-cta">Sign In</Link>
               <Link to="/auth" state={{ signup: true }} className="mobile-cta filled">Sign Up</Link>
             </>
           )}
         </div>
       </div>
 
-      {/* Overlay */}
-      {menuOpen && (
-        <div className="mobile-overlay" onClick={() => setMenuOpen(false)} />
-      )}
+      {menuOpen && <div className="mobile-overlay" onClick={() => setMenuOpen(false)} />}
     </>
   );
 };

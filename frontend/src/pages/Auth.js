@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { useNavigate,useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import './Auth.css';
 import API_URL from '../config';
+import './Auth.css';
 
 const Auth = () => {
   const location = useLocation();
-  const [isLogin, setIsLogin] = useState(!location.state?.signup); // ← change this
+  // Read state passed from nav buttons to know which form to show
+  const [isLogin, setIsLogin] = useState(location.state?.signup ? false : true);
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,33 +20,21 @@ const Auth = () => {
   };
 
   const handleSubmit = async () => {
-  setError('');
+    setError('');
+    setLoading(true);
+    try {
+      const url = isLogin
+        ? `${API_URL}/api/auth/login`
+        : `${API_URL}/api/auth/register`;
 
-  // Validate fields
-  if (!formData.email || !formData.password) {
-    setError('Please fill all fields');
-    return;
-  }
-
-  if (!isLogin && !formData.name) {
-    setError('Please enter your name');
-    return;
-  }
-
-  setLoading(true);
-  try {
-    const url = isLogin
-      ? `${API_URL}/api/auth/login`
-      : `${API_URL}/api/auth/register`;
-
-    const res = await axios.post(url, formData);
-    login(res.data.user, res.data.token);
-    navigate('/');
-  } catch (err) {
-    setError(err.response?.data?.message || 'Something went wrong');
-  }
-  setLoading(false);
-};
+      const res = await axios.post(url, formData);
+      login(res.data.user, res.data.token);
+      navigate('/');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Something went wrong');
+    }
+    setLoading(false);
+  };
 
   const quotes = [
     { text: "Yoga is the journey of the self, through the self, to the self.", source: "Bhagavad Gita 6.20" },
@@ -67,6 +56,23 @@ const Auth = () => {
 
       <div className="auth-right">
         <div className="auth-form-wrap">
+
+          {/* Toggle tabs */}
+          <div className="auth-tabs">
+            <button
+              className={`auth-tab ${isLogin ? 'active' : ''}`}
+              onClick={() => { setIsLogin(true); setError(''); }}
+            >
+              Sign In
+            </button>
+            <button
+              className={`auth-tab ${!isLogin ? 'active' : ''}`}
+              onClick={() => { setIsLogin(false); setError(''); }}
+            >
+              Sign Up
+            </button>
+          </div>
+
           <div className="auth-form-title">
             {isLogin ? 'Welcome Back' : 'Begin Journey'}
           </div>
@@ -82,6 +88,7 @@ const Auth = () => {
                 type="text"
                 name="name"
                 placeholder="Your name"
+                value={formData.name}
                 onChange={handleChange}
               />
             </div>
@@ -94,6 +101,7 @@ const Auth = () => {
               type="email"
               name="email"
               placeholder="your@email.com"
+              value={formData.email}
               onChange={handleChange}
             />
           </div>
@@ -105,6 +113,7 @@ const Auth = () => {
               type="password"
               name="password"
               placeholder="••••••••"
+              value={formData.password}
               onChange={handleChange}
             />
           </div>
@@ -116,19 +125,16 @@ const Auth = () => {
             onClick={handleSubmit}
             disabled={loading}
           >
-            {loading ? 'Please wait...' : isLogin ? 'Enter the Path' : 'Start My Journey'}
+            {loading ? 'Please wait...' : isLogin ? 'Sign In' : 'Create Account'}
           </button>
 
           <div className="form-switch">
-  {isLogin ? "New seeker? " : "Already a seeker? "}
-  <span onClick={() => {
-    setIsLogin(!isLogin);
-    setError('');
-    setFormData({ name: '', email: '', password: '' });
-  }}>
-    {isLogin ? 'Create account →' : 'Sign in →'}
-  </span>
-</div>
+            {isLogin ? "New seeker? " : "Already a seeker? "}
+            <span onClick={() => { setIsLogin(!isLogin); setError(''); }}>
+              {isLogin ? 'Sign Up →' : 'Sign In →'}
+            </span>
+          </div>
+
         </div>
       </div>
     </div>
