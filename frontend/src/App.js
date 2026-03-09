@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -9,6 +9,8 @@ import Profile from './pages/Profile';
 import Auth from './pages/Auth';
 import Admin from './pages/Admin';
 import NotFound from './pages/NotFound';
+import Footer from './components/Footer';
+
 
 // Protected route — redirects to login if not logged in
 const ProtectedRoute = ({ children }) => {
@@ -18,6 +20,8 @@ const ProtectedRoute = ({ children }) => {
 };
 
 const AppContent = () => {
+  const location = useLocation();
+  const hideFooter = location.pathname.startsWith('/reader');
   return (
     <Router>
       <Navbar />
@@ -40,6 +44,7 @@ const AppContent = () => {
 <Route path="*" element={<NotFound />} />
 
       </Routes>
+      {!hideFooter && <Footer />}
     </Router>
   );
 };
