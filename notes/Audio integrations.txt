@@ -1,0 +1,363 @@
+Audio integrations
+
+Perfect choice bro! Let's set up Cloudinary! 🔥
+
+---
+
+## Step 1 — Create Cloudinary Account
+
+👉 Go to **https://cloudinary.com**
+1. Click **"Sign Up Free"**
+2. Fill details and verify email
+3. After login you'll see the **Dashboard**
+
+---
+
+## Step 2 — Get Your Credentials
+
+On the Cloudinary Dashboard you'll see:
+
+```
+Cloud Name:    your-cloud-name
+API Key:       123456789012345
+API Secret:    xxxxxxxxxxxxxxxxxxxxxxx
+```
+
+📌 **Copy all 3 — we need them!**
+
+---
+
+## Step 3 — Add to Backend `.env`
+
+Add these to `backend/.env`:
+
+```
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+```
+
+---
+
+## Step 4 — Install Cloudinary in Backend
+
+```bash
+cd backend
+npm install cloudinary multer multer-storage-cloudinary
+```
+
+**What each package does:**
+| Package | Purpose |
+|---|---|
+| `cloudinary` | Connects to Cloudinary API |
+| `multer` | Handles file uploads in Express |
+| `multer-storage-cloudinary` | Saves uploaded files directly to Cloudinary |
+
+---
+
+## Step 5 — Create Cloudinary Config
+
+Create `backend/config/cloudinary.js`:
+
+```javascript
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const multer = require('multer');
+
+// Configure cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Configure storage — saves audio to cloudinary
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'tatvapath/audio',     // Folder in cloudinary
+    resource_type: 'video',        // Audio files use 'video' type in cloudinary
+    allowed_formats: ['mp3', 'wav', 'ogg', 'm4a'],
+    public_id: (req, file) => {
+      // Name file as: scriptureId_adhyayaId_verseNumber
+      return `verse_${Date.now()}`;
+    }
+  }
+});
+
+const upload = multer({ storage });
+
+module.exports = { cloudinary, upload };
+```
+
+---
+
+## Step 6 — Create Audio Upload API
+
+Create `backend/controllers/audioController.js`:
+
+```javascript
+const Verse = require('../models/Verse');
+const { cloudinary } = require('../config/cloudinary');
+
+// Upload audio for a verse
+// POST /api/admin/audio/:verseId
+const uploadAudio = async (req, res) => {
+  try {
+    const verse = await Verse.findById(req.params.verseId);
+    if (!verse) {
+      return res.status(404).json({ message: 'Verse not found' });
+    }
+
+    // Delete old audio if exists
+    if (verse.audioPublicId) {
+      await cloudinary.uploader.destroy(verse.audioPublicId, {
+        resource_type: 'video'
+      });
+    }
+
+    // Save new audio URL to verse
+    verse.audioUrl = req.file.path;
+    verse.audioPublicId = req.file.filename;
+    await verse.save();
+
+    res.json({
+      message: 'Audio uploaded successfully!',
+      audioUrl: verse.audioUrl
+    });
+
+  } catch (error) {
+    console.error('Audio upload error:', error);
+    res.status(500).json({ message: 'Upload failed' });
+  }
+};
+
+// Delete audio for a verse
+const deleteAudio = async (req, res) => {
+  try {
+    const verse = await Verse.findById(req.params.verseId);
+    if (!verse) {
+      return res.status(404).json({ message: 'Verse not found' });
+    }
+
+    if (verse.audioPublicId) {
+      await cloudinary.uploader.destroy(verse.audioPublicId, {
+        resource_type: 'video'
+      });
+      verse.audioUrl = null;
+      verse.audioPublicId = null;
+      await verse.save();
+    }
+
+    res.json({ message: 'Audio deleted successfully!' });
+  } catch (error) {
+    res.status(500).json({ message: 'Delete failed' });
+  }
+};
+
+module.exports = { uploadAudio, deleteAudio };
+```
+
+---
+
+## Step 7 — Update Verse Model
+
+Open `backend/models/Verse.js` and make sure these fields exist:
+
+```javascript
+audioUrl: {
+  type: String,
+  default: null     // URL to audio file on Cloudinary
+},
+audioPublicId: {
+  type: String,
+  default: null     // Cloudinary public ID for deletion
+}
+```
+
+---
+
+## Step 8 — Add Audio Routes
+
+Update `backend/routes/adminRoutes.js` — add at top:
+
+```javascript
+const { upload } = require('../config/cloudinary');
+const { uploadAudio, deleteAudio } = require('../controllers/audioController');
+```
+
+Add these routes at the bottom before `module.exports`:
+
+```javascript
+// Audio upload routes
+router.post('/audio/:verseId', upload.single('audio'), uploadAudio);
+router.delete('/audio/:verseId', deleteAudio);
+```
+
+---
+
+## Step 9 — Add Audio Upload to Admin Panel
+
+In `frontend/src/pages/Admin.js`, add a new tab for audio.
+
+First add `'audio'` to tabs array:
+```javascript
+const tabs = ['dashboard', 'scripture', 'adhyaya', 'verse', 'question', 'audio', 'manage'];
+```
+
+Add tab label:
+```javascript
+{t === 'audio' && '🎧 Upload Audio'}
+```
+
+Add the audio tab content inside the return — after the question tab:
+
+```javascript
+{/* UPLOAD AUDIO */}
+{tab === 'audio' && (
+  <div>
+    <h2 className="admin-title">🎧 Upload Verse Audio</h2>
+    <div className="admin-form">
+      <div className="form-group">
+        <label className="form-label">Select Verse</label>
+        <select
+          className="form-input"
+          value={questionForm.verseId}
+          onChange={e => setQuestionForm({ ...questionForm, verseId: e.target.value })}
+        >
+          <option value="">Select Verse</option>
+          {verses.map(v => (
+            <option key={v._id} value={v._id}>
+              {v.scriptureId?.title} — Ch.{v.adhyayaId?.number} Verse {v.verseNumber}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="form-group">
+        <label className="form-label">Audio File (MP3/WAV)</label>
+        <input
+          className="form-input"
+          type="file"
+          accept="audio/*"
+          onChange={e => setAudioFile(e.target.files[0])}
+          style={{ padding: '0.5rem' }}
+        />
+      </div>
+
+      {audioFile && (
+        <div style={{ marginBottom: '1rem', color: 'var(--gold)', fontSize: '0.9rem' }}>
+          Selected: {audioFile.name}
+        </div>
+      )}
+
+      <button
+        className="admin-btn"
+        onClick={uploadAudio}
+        disabled={!questionForm.verseId || !audioFile}
+      >
+        {audioUploading ? 'Uploading...' : '⬆ Upload Audio'}
+      </button>
+    </div>
+
+    {/* Verses with audio status */}
+    <h3 className="manage-subtitle" style={{ marginTop: '3rem' }}>
+      📜 Verses Audio Status
+    </h3>
+    <div className="manage-list">
+      {verses.map(v => (
+        <div key={v._id} className="manage-item">
+          <div className="manage-item-info">
+            <span className="manage-item-title">
+              {v.scriptureId?.title} — Ch.{v.adhyayaId?.number} Verse {v.verseNumber}
+            </span>
+            <span className="manage-item-sub">
+              {v.audioUrl ? '🎧 Audio available' : '❌ No audio yet'}
+            </span>
+          </div>
+          {v.audioUrl && (
+            <audio controls style={{ height: '32px' }}>
+              <source src={v.audioUrl} />
+            </audio>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+```
+
+Add these state variables at top of Admin component:
+
+```javascript
+const [audioFile, setAudioFile] = useState(null);
+const [audioUploading, setAudioUploading] = useState(false);
+```
+
+Add the upload function inside Admin component:
+
+```javascript
+const uploadAudio = async () => {
+  if (!questionForm.verseId || !audioFile) return;
+  setAudioUploading(true);
+  try {
+    const formData = new FormData();
+    formData.append('audio', audioFile);
+
+    await axios.post(
+      `${API}/audio/${questionForm.verseId}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    );
+    showMsg('🎧 Audio uploaded successfully!');
+    setAudioFile(null);
+    loadAll();
+  } catch (err) {
+    showMsg('Audio upload failed', 'error');
+  }
+  setAudioUploading(false);
+};
+```
+
+---
+
+## Step 10 — Add Render Environment Variables
+
+Go to Render → Environment → Add:
+
+```
+CLOUDINARY_CLOUD_NAME  →  your-cloud-name
+CLOUDINARY_API_KEY     →  your-api-key
+CLOUDINARY_API_SECRET  →  your-api-secret
+```
+
+---
+
+## Step 11 — Push Everything
+
+```bash
+cd Desktop/tatvapath
+git add .
+git commit -m "add cloudinary audio upload"
+git push
+```
+
+---
+
+## How it will work end to end:
+
+```
+Admin uploads MP3 → Cloudinary stores it
+Cloudinary returns URL → saved in MongoDB verse.audioUrl
+Reader page fetches verse → gets audioUrl
+Audio player plays the URL directly 🎧
+```
+
+---
+
+Tell me once you have your Cloudinary credentials and we test the full audio flow! 🔥

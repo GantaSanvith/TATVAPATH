@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import './Admin.css';
 import API_URL from '../config';
+import './Admin.css';
 
 const API = `${API_URL}/api/admin`;
 
@@ -19,36 +19,52 @@ const Admin = () => {
   const [verses, setVerses] = useState([]);
   const [msg, setMsg] = useState({ text: '', type: '' });
 
-  // Form states
-  const [scriptureForm, setScriptureForm] = useState({ title: '', description: '', icon: '📖', totalAdhyayas: 0, totalVerses: 0 });
-  const [adhyayaForm, setAdhyayaForm] = useState({ scriptureId: '', number: '', title: '', description: '', totalVerses: 0 });
-  const [verseForm, setVerseForm] = useState({ scriptureId: '', adhyayaId: '', verseNumber: '', sanskrit: '', transliteration: '', meaning: '', meaningHindi: '' });
-  const [questionForm, setQuestionForm] = useState({ verseId: '', question: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: 'A', points: 50 });
+  // Audio states
+  const [audioFile, setAudioFile] = useState(null);
+  const [audioUploading, setAudioUploading] = useState(false);
+  const [selectedVerseForAudio, setSelectedVerseForAudio] = useState('');
 
-   // eslint-disable-next-line react-hooks/exhaustive-deps
-useEffect(() => {
-  if (!user?.isAdmin) {
-    navigate('/');
-    return;
-  }
-  const fetchAll = async () => {
-    try {
-      const [s, a, v, st] = await Promise.all([
-        axios.get(`${API}/scriptures`, { headers }),
-        axios.get(`${API}/adhyayas`, { headers }),
-        axios.get(`${API}/verses`, { headers }),
-        axios.get(`${API}/stats`, { headers }),
-      ]);
-      setScriptures(s.data);
-      setAdhyayas(a.data);
-      setVerses(v.data);
-      setStats(st.data);
-    } catch (err) {
-      showMsg('Failed to load data', 'error');
+  // Form states
+  const [scriptureForm, setScriptureForm] = useState({
+    title: '', description: '', icon: '📖', totalAdhyayas: 0, totalVerses: 0
+  });
+  const [adhyayaForm, setAdhyayaForm] = useState({
+    scriptureId: '', number: '', title: '', description: '', totalVerses: 0
+  });
+  const [verseForm, setVerseForm] = useState({
+    scriptureId: '', adhyayaId: '', verseNumber: '',
+    sanskrit: '', transliteration: '', meaning: '', meaningHindi: ''
+  });
+  const [questionForm, setQuestionForm] = useState({
+    verseId: '', question: '', optionA: '', optionB: '',
+    optionC: '', optionD: '', correctOption: 'A', points: 50
+  });
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (!user?.isAdmin) {
+      navigate('/');
+      return;
     }
-  };
-  fetchAll();
-}, []); // eslint-disable-line react-hooks/exhaustive-deps
+    const fetchAll = async () => {
+      try {
+        const [s, a, v, st] = await Promise.all([
+          axios.get(`${API}/scriptures`, { headers }),
+          axios.get(`${API}/adhyayas`, { headers }),
+          axios.get(`${API}/verses`, { headers }),
+          axios.get(`${API}/stats`, { headers }),
+        ]);
+        setScriptures(s.data);
+        setAdhyayas(a.data);
+        setVerses(v.data);
+        setStats(st.data);
+      } catch (err) {
+        showMsg('Failed to load data', 'error');
+      }
+    };
+    fetchAll();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const loadAll = async () => {
     try {
       const [s, a, v, st] = await Promise.all([
@@ -74,7 +90,7 @@ useEffect(() => {
   const submit = async (url, data, resetFn) => {
     try {
       await axios.post(`${API}/${url}`, data, { headers });
-      showMsg(`✅ ${url} added successfully!`);
+      showMsg(`✅ Added successfully!`);
       resetFn();
       loadAll();
     } catch (err) {
@@ -93,7 +109,52 @@ useEffect(() => {
     }
   };
 
-  const tabs = ['dashboard', 'scripture', 'adhyaya', 'verse', 'question', 'manage'];
+  // Upload audio to cloudinary via backend
+  const uploadAudio = async () => {
+    if (!selectedVerseForAudio || !audioFile) {
+      showMsg('Please select a verse and audio file', 'error');
+      return;
+    }
+    setAudioUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('audio', audioFile);
+
+      await axios.post(
+        `${API}/audio/${selectedVerseForAudio}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+      showMsg('🎧 Audio uploaded successfully!');
+      setAudioFile(null);
+      setSelectedVerseForAudio('');
+      loadAll();
+    } catch (err) {
+      showMsg('Audio upload failed', 'error');
+    }
+    setAudioUploading(false);
+  };
+
+  const deleteAudio = async (verseId) => {
+    if (!window.confirm('Delete audio for this verse?')) return;
+    try {
+      await axios.delete(`${API}/audio/${verseId}`, { headers });
+      showMsg('🗑️ Audio deleted!');
+      loadAll();
+    } catch (err) {
+      showMsg('Delete failed', 'error');
+    }
+  };
+
+  const tabs = [
+    'dashboard', 'scripture', 'adhyaya',
+    'verse', 'question', 'audio', 'manage'
+  ];
 
   return (
     <div className="admin-page">
@@ -110,6 +171,7 @@ useEffect(() => {
             {t === 'adhyaya' && '📚 Add Adhyaya'}
             {t === 'verse' && '📜 Add Verse'}
             {t === 'question' && '❓ Add Question'}
+            {t === 'audio' && '🎧 Upload Audio'}
             {t === 'manage' && '🗑️ Manage Content'}
           </div>
         ))}
@@ -123,7 +185,7 @@ useEffect(() => {
           <div className={`admin-msg ${msg.type}`}>{msg.text}</div>
         )}
 
-        {/* DASHBOARD */}
+        {/* ===== DASHBOARD ===== */}
         {tab === 'dashboard' && (
           <div>
             <h2 className="admin-title">📊 Dashboard</h2>
@@ -145,7 +207,7 @@ useEffect(() => {
           </div>
         )}
 
-        {/* ADD SCRIPTURE */}
+        {/* ===== ADD SCRIPTURE ===== */}
         {tab === 'scripture' && (
           <div>
             <h2 className="admin-title">📖 Add New Scripture</h2>
@@ -178,7 +240,7 @@ useEffect(() => {
           </div>
         )}
 
-        {/* ADD ADHYAYA */}
+        {/* ===== ADD ADHYAYA ===== */}
         {tab === 'adhyaya' && (
           <div>
             <h2 className="admin-title">📚 Add New Adhyaya</h2>
@@ -218,7 +280,7 @@ useEffect(() => {
           </div>
         )}
 
-        {/* ADD VERSE */}
+        {/* ===== ADD VERSE ===== */}
         {tab === 'verse' && (
           <div>
             <h2 className="admin-title">📜 Add New Verse</h2>
@@ -238,7 +300,11 @@ useEffect(() => {
                   <option value="">Select Adhyaya</option>
                   {adhyayas
                     .filter(a => a.scriptureId?._id === verseForm.scriptureId)
-                    .map(a => <option key={a._id} value={a._id}>Chapter {a.number} — {a.title}</option>)
+                    .map(a => (
+                      <option key={a._id} value={a._id}>
+                        Chapter {a.number} — {a.title}
+                      </option>
+                    ))
                   }
                 </select>
               </div>
@@ -274,7 +340,10 @@ useEffect(() => {
               </div>
               <button className="admin-btn" onClick={() =>
                 submit('verse', verseForm, () =>
-                  setVerseForm({ scriptureId: '', adhyayaId: '', verseNumber: '', sanskrit: '', transliteration: '', meaning: '', meaningHindi: '' }))
+                  setVerseForm({
+                    scriptureId: '', adhyayaId: '', verseNumber: '',
+                    sanskrit: '', transliteration: '', meaning: '', meaningHindi: ''
+                  }))
               }>
                 Add Verse
               </button>
@@ -282,7 +351,7 @@ useEffect(() => {
           </div>
         )}
 
-        {/* ADD QUESTION */}
+        {/* ===== ADD QUESTION ===== */}
         {tab === 'question' && (
           <div>
             <h2 className="admin-title">❓ Add Quiz Question</h2>
@@ -327,7 +396,10 @@ useEffect(() => {
               </div>
               <button className="admin-btn" onClick={() =>
                 submit('question', questionForm, () =>
-                  setQuestionForm({ verseId: '', question: '', optionA: '', optionB: '', optionC: '', optionD: '', correctOption: 'A', points: 50 }))
+                  setQuestionForm({
+                    verseId: '', question: '', optionA: '', optionB: '',
+                    optionC: '', optionD: '', correctOption: 'A', points: 50
+                  }))
               }>
                 Add Question
               </button>
@@ -335,7 +407,99 @@ useEffect(() => {
           </div>
         )}
 
-        {/* MANAGE */}
+        {/* ===== UPLOAD AUDIO ===== */}
+        {tab === 'audio' && (
+          <div>
+            <h2 className="admin-title">🎧 Upload Verse Audio</h2>
+            <div className="admin-form">
+
+              <div className="form-group">
+                <label className="form-label">Select Verse</label>
+                <select
+                  className="form-input"
+                  value={selectedVerseForAudio}
+                  onChange={e => setSelectedVerseForAudio(e.target.value)}
+                >
+                  <option value="">Select Verse</option>
+                  {verses.map(v => (
+                    <option key={v._id} value={v._id}>
+                      {v.scriptureId?.title} — Ch.{v.adhyayaId?.number} Verse {v.verseNumber}
+                      {v.audioUrl ? ' 🎧' : ' ❌'}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Audio File (MP3 / WAV / OGG)</label>
+                <input
+                  className="form-input"
+                  type="file"
+                  accept="audio/*"
+                  style={{ padding: '0.5rem' }}
+                  onChange={e => setAudioFile(e.target.files[0])}
+                />
+              </div>
+
+              {audioFile && (
+                <div style={{
+                  marginBottom: '1rem',
+                  color: 'var(--gold)',
+                  fontSize: '0.9rem',
+                  fontStyle: 'italic'
+                }}>
+                  Selected: {audioFile.name} ({(audioFile.size / 1024 / 1024).toFixed(2)} MB)
+                </div>
+              )}
+
+              <button
+                className="admin-btn"
+                onClick={uploadAudio}
+                disabled={!selectedVerseForAudio || !audioFile || audioUploading}
+              >
+                {audioUploading ? '⏳ Uploading...' : '⬆ Upload Audio'}
+              </button>
+            </div>
+
+            {/* Audio status list */}
+            <h3 className="manage-subtitle" style={{ marginTop: '3rem' }}>
+              📜 All Verses — Audio Status
+            </h3>
+            <div className="manage-list">
+              {verses.map(v => (
+                <div key={v._id} className="manage-item">
+                  <div className="manage-item-info">
+                    <span className="manage-item-title">
+                      {v.scriptureId?.title} — Ch.{v.adhyayaId?.number} Verse {v.verseNumber}
+                    </span>
+                    <span className="manage-item-sub">
+                      {v.audioUrl
+                        ? '🎧 Audio available'
+                        : '❌ No audio uploaded yet'}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
+                    {v.audioUrl && (
+                      <>
+                        <audio controls style={{ height: '32px' }}>
+                          <source src={v.audioUrl} />
+                        </audio>
+                        <button
+                          className="delete-btn"
+                          onClick={() => deleteAudio(v._id)}
+                        >
+                          🗑️
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ===== MANAGE CONTENT ===== */}
         {tab === 'manage' && (
           <div>
             <h2 className="admin-title">🗑️ Manage Content</h2>
@@ -348,9 +512,14 @@ useEffect(() => {
                     <span className="manage-item-title">
                       {v.scriptureId?.title} — Ch.{v.adhyayaId?.number} Verse {v.verseNumber}
                     </span>
-                    <span className="manage-item-sub">{v.sanskrit?.slice(0, 60)}...</span>
+                    <span className="manage-item-sub">
+                      {v.sanskrit?.slice(0, 60)}...
+                    </span>
                   </div>
-                  <button className="delete-btn" onClick={() => deleteItem('verse', v._id)}>
+                  <button
+                    className="delete-btn"
+                    onClick={() => deleteItem('verse', v._id)}
+                  >
                     🗑️ Delete
                   </button>
                 </div>

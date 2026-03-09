@@ -31,6 +31,10 @@ const verseSchema = new mongoose.Schema({
   },
   audioUrl: {
     type: String         // URL to audio recitation file
+  },
+  audioPublicId:{
+    type:String,
+    default:null
   }
 }, { timestamps: true });
 
