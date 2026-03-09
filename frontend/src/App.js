@@ -11,7 +11,6 @@ import Admin from './pages/Admin';
 import NotFound from './pages/NotFound';
 import Footer from './components/Footer';
 
-
 // Protected route — redirects to login if not logged in
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -19,11 +18,13 @@ const ProtectedRoute = ({ children }) => {
   return user ? children : <Navigate to="/auth" />;
 };
 
+// AppContent is INSIDE Router so useLocation works
 const AppContent = () => {
   const location = useLocation();
   const hideFooter = location.pathname.startsWith('/reader');
+
   return (
-    <Router>
+    <>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -39,20 +40,21 @@ const AppContent = () => {
           <ProtectedRoute><Profile /></ProtectedRoute>
         } />
         <Route path="/admin" element={
-  <ProtectedRoute><Admin /></ProtectedRoute>
-} />
-<Route path="*" element={<NotFound />} />
-
+          <ProtectedRoute><Admin /></ProtectedRoute>
+        } />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       {!hideFooter && <Footer />}
-    </Router>
+    </>
   );
 };
 
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+      <Router>
+        <AppContent />
+      </Router>
     </AuthProvider>
   );
 }
