@@ -182,3 +182,339 @@
   .admin-page { grid-template-columns: 1fr; }
   .admin-sidebar { position: static; height: auto; }
 }
+
+.bulk-upload-tab { padding: 1rem 0; }
+
+.admin-section-title {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: 1.3rem;
+  color: var(--gold2);
+  margin-bottom: 2rem;
+}
+
+.bulk-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.bulk-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.bulk-card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.92rem;
+  color: var(--cream);
+  letter-spacing: 0.06em;
+}
+
+.bulk-template-link {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--gold);
+  text-decoration: none;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--border2);
+  transition: all 0.2s;
+}
+
+.bulk-template-link:hover {
+  background: rgba(201,146,42,0.1);
+  border-color: var(--gold);
+}
+
+.bulk-cols { margin-bottom: 1.5rem; }
+
+.bulk-col-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.bulk-cols-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bulk-cols-list span {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  padding: 0.3rem 0.7rem;
+  background: rgba(201,146,42,0.1);
+  border: 1px solid var(--border2);
+  color: var(--gold2);
+}
+
+.bulk-cols-list span.optional {
+  background: rgba(255,255,255,0.03);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+.bulk-upload-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.bulk-file-label {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.85rem 1.2rem;
+  background: var(--bg2);
+  border: 1px dashed var(--border2);
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: block;
+}
+
+.bulk-file-label:hover {
+  border-color: var(--gold);
+  color: var(--cream);
+}
+
+.bulk-upload-btn {
+  padding: 0.85rem 1.8rem;
+  background: linear-gradient(135deg, var(--gold), var(--saffron));
+  border: none;
+  color: var(--bg);
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+
+.bulk-upload-btn:hover { box-shadow: 0 6px 20px rgba(201,146,42,0.35); }
+.bulk-upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.bulk-result {
+  margin-top: 1.2rem;
+  padding: 1rem 1.2rem;
+  font-size: 0.9rem;
+  border-left: 3px solid;
+}
+
+.bulk-result.success {
+  background: rgba(76,175,80,0.08);
+  border-color: #4caf50;
+  color: #81c784;
+}
+
+.bulk-result.error {
+  background: rgba(229,57,53,0.08);
+  border-color: #e53935;
+  color: #ef9a9a;
+}
+
+.bulk-errors { margin-top: 0.8rem; }
+
+.bulk-error-row {
+  font-size: 0.82rem;
+  color: #ef9a9a;
+  margin-bottom: 0.3rem;
+  opacity: 0.85;
+}
+
+.bulk-tips {
+  background: rgba(201,146,42,0.05);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+}
+
+.bulk-tips-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  color: var(--gold);
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.1em;
+}
+
+.bulk-tips ul {
+  list-style: none;
+  padding: 0; margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bulk-tips li {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  padding-left: 1rem;
+  position: relative;
+}
+
+.bulk-tips li::before {
+  content: '✦';
+  position: absolute; left: 0;
+  color: var(--saffron);
+  font-size: 0.6rem;
+  top: 3px;
+}
+
+/* ===== NEW BULK UPLOAD TAB CLASSES (Admin.js integrated) ===== */
+
+.bulk-info-box {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  border-radius: 2px;
+}
+
+.bulk-info-box p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.bulk-info-box ul li {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.bulk-info-box code {
+  background: rgba(201,146,42,0.12);
+  color: var(--gold2);
+  padding: 0.1rem 0.4rem;
+  font-size: 0.82rem;
+  border-radius: 2px;
+}
+
+.csv-columns-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.csv-col-row {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.csv-col-name {
+  min-width: 160px;
+  background: rgba(201,146,42,0.12);
+  color: var(--gold2);
+  padding: 0.2rem 0.6rem;
+  font-size: 0.82rem;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.csv-col-desc {
+  color: var(--text-muted);
+  font-size: 0.86rem;
+}
+
+.id-ref-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.id-ref-label {
+  color: var(--cream2);
+  font-size: 0.88rem;
+  font-family: 'Cinzel', serif;
+}
+
+.id-ref-value {
+  color: var(--gold);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  background: rgba(201,146,42,0.08);
+  padding: 0.2rem 0.6rem;
+  border-radius: 2px;
+  user-select: all;
+}
+
+.admin-btn-outline {
+  padding: 0.75rem 1.8rem;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-btn-outline:hover {
+  background: rgba(201,146,42,0.1);
+  box-shadow: 0 0 12px rgba(201,146,42,0.2);
+}
+
+.csv-result-box {
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  padding: 1.5rem;
+}
+
+.csv-result-stats {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.csv-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.csv-stat-num {
+  font-size: 2.2rem;
+  font-family: 'Cinzel Decorative', cursive;
+  font-weight: 700;
+}
+
+.csv-stat-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.csv-error-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.csv-error-item {
+  font-size: 0.84rem;
+  color: #ef9a9a;
+  padding: 0.4rem 0.8rem;
+  background: rgba(239,68,68,0.07);
+  border-left: 2px solid #f87171;
+}
