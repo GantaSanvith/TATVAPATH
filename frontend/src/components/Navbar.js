@@ -32,6 +32,7 @@ const Navbar = () => {
             <>
               <Link to="/leaderboard" className={location.pathname === '/leaderboard' ? 'active' : ''}>Leaderboard</Link>
               <Link to="/profile" className={location.pathname === '/profile' ? 'active' : ''}>Profile</Link>
+              <Link to="/settings" className={location.pathname === '/settings' ? 'active' : ''}>Settings</Link>
               <button className="nav-btn danger" onClick={handleLogout}>Sign Out</button>
             </>
           ) : (
@@ -55,6 +56,7 @@ const Navbar = () => {
             <>
               <Link to="/leaderboard">Leaderboard</Link>
               <Link to="/profile">Profile</Link>
+              <Link to="/settings">Settings</Link>
               <div className="mobile-divider" />
               <div className="mobile-user">
                 <span className="mobile-avatar">{user.name?.charAt(0).toUpperCase()}</span>

@@ -10,6 +10,7 @@ import Auth from './pages/Auth';
 import Admin from './pages/Admin';
 import NotFound from './pages/NotFound';
 import Footer from './components/Footer';
+import Settings from './pages/Settings';
 
 // Protected route — redirects to login if not logged in
 const ProtectedRoute = ({ children }) => {
@@ -42,6 +43,9 @@ const AppContent = () => {
         <Route path="/admin" element={
           <ProtectedRoute><Admin /></ProtectedRoute>
         } />
+        <Route path="/settings" element={
+  <ProtectedRoute><Settings /></ProtectedRoute>
+} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       {!hideFooter && <Footer />}
