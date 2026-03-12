@@ -7,9 +7,16 @@ const { adminOnly } = require('../middleware/adminMiddleware');
 const { upload } = require('../config/cloudinary');
 const { uploadAudio, deleteAudio } = require('../controllers/audioController');
 const {
-  getStats, getScriptures, getAdhyayas, getVerses,
-  addScripture, addAdhyaya, addVerse, addQuestion,
-  deleteVerse, deleteQuestion
+  getStats,
+  getScriptures,
+  getAdhyayas,
+  getVerses,
+  addScripture,
+  addAdhyaya,
+  addVerse,
+  addQuestion,
+  deleteVerse,
+  deleteQuestion
 } = require('../controllers/adminController');
 
 const Verse = require('../models/Verse');
@@ -17,27 +24,34 @@ const QuizQuestion = require('../models/QuizQuestion');
 
 const csvUpload = multer({ storage: multer.memoryStorage() });
 
-// All admin routes need: login + admin role
+// All routes protected
 router.use(protect, adminOnly);
 
+// Stats
 router.get('/stats', getStats);
+
+// Scriptures
 router.get('/scriptures', getScriptures);
-router.get('/adhyayas', getAdhyayas);
-router.get('/verses', getVerses);
-
 router.post('/scripture', addScripture);
-router.post('/adhyaya', addAdhyaya);
-router.post('/verse', addVerse);
-router.post('/question', addQuestion);
 
+// Adhyayas
+router.get('/adhyayas', getAdhyayas);
+router.post('/adhyaya', addAdhyaya);
+
+// Verses
+router.get('/verses', getVerses);
+router.post('/verse', addVerse);
 router.delete('/verse/:id', deleteVerse);
+
+// Questions
+router.post('/question', addQuestion);
 router.delete('/question/:id', deleteQuestion);
 
-// Audio routes
+// Audio
 router.post('/audio/:verseId', upload.single('audio'), uploadAudio);
 router.delete('/audio/:verseId', deleteAudio);
 
-// Bulk CSV upload
+// Bulk CSV Upload
 router.post('/bulk-upload', csvUpload.single('csvfile'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
@@ -86,12 +100,14 @@ router.post('/bulk-upload', csvUpload.single('csvfile'), async (req, res) => {
           });
           questionsCreated++;
         }
+
       } catch (rowErr) {
         errors.push(`Row ${i + 2}: ${rowErr.message}`);
       }
     }
 
     res.json({ message: 'Bulk upload complete', versesCreated, questionsCreated, errors });
+
   } catch (err) {
     res.status(500).json({ message: 'Upload failed', error: err.message });
   }
