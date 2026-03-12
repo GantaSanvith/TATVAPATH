@@ -4,35 +4,24 @@ const jwt = require('jsonwebtoken');
 
 // ========== GENERATE JWT TOKEN ==========
 const generateToken = (userId) => {
-  return jwt.sign(
-    { id: userId },
-    process.env.JWT_SECRET,
-    { expiresIn: '7d' }
-  );
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
 };
 
 // ========== REGISTER ==========
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
+    if (!name || !email || !password)
       return res.status(400).json({ message: 'Please fill all fields' });
-    }
 
     const existingUser = await User.findOne({ email });
-    if (existingUser) {
+    if (existingUser)
       return res.status(400).json({ message: 'Email already registered' });
-    }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = await User.create({
-      name,
-      email,
-      password: hashedPassword
-    });
+    const user = await User.create({ name, email, password: hashedPassword });
 
     res.status(201).json({
       message: 'Account created successfully!',
@@ -44,10 +33,9 @@ const registerUser = async (req, res) => {
         totalPoints: user.totalPoints,
         currentStreak: user.currentStreak,
         longestStreak: user.longestStreak,
-        isAdmin: user.isAdmin       // ✅ included
+        isAdmin: user.isAdmin
       }
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -60,14 +48,12 @@ const loginUser = async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user) {
+    if (!user)
       return res.status(400).json({ message: 'Invalid email or password' });
-    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
+    if (!isMatch)
       return res.status(400).json({ message: 'Invalid email or password' });
-    }
 
     res.json({
       message: 'Login successful!',
@@ -79,28 +65,26 @@ const loginUser = async (req, res) => {
         totalPoints: user.totalPoints,
         currentStreak: user.currentStreak,
         longestStreak: user.longestStreak,
-        isAdmin: user.isAdmin       // ✅ included
+        isAdmin: user.isAdmin
       }
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
-// GET user profile with real streak data
+
+// ========== GET PROFILE ==========
 const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select('-password');
-    
-    // Get all completed verses with dates
+
     const UserProgress = require('../models/UserProgress');
     const progress = await UserProgress.find({
       userId: req.user._id,
       completed: true
     }).select('attemptedAt').sort({ attemptedAt: 1 });
 
-    // Get unique active days
     const activeDays = [...new Set(
       progress.map(p => {
         const d = new Date(p.attemptedAt);
@@ -119,11 +103,72 @@ const getUserProfile = async (req, res) => {
         lastActiveDate: user.lastActiveDate,
         isAdmin: user.isAdmin
       },
-      activeDays  // Array of "YYYY-M-D" strings
+      activeDays
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-module.exports = { registerUser, loginUser, getUserProfile };
+// ========== UPDATE PROFILE (name) ==========
+const updateProfile = async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name)
+      return res.status(400).json({ message: 'Name is required' });
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { name },
+      { new: true }
+    ).select('-password');
+
+    res.json({
+      message: 'Profile updated!',
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        totalPoints: user.totalPoints,
+        currentStreak: user.currentStreak,
+        longestStreak: user.longestStreak,
+        isAdmin: user.isAdmin
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// ========== CHANGE PASSWORD ==========
+const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword)
+      return res.status(400).json({ message: 'Please fill all fields' });
+
+    const user = await User.findById(req.user._id);
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch)
+      return res.status(400).json({ message: 'Current password is incorrect' });
+
+    if (newPassword.length < 6)
+      return res.status(400).json({ message: 'New password must be at least 6 characters' });
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    await user.save();
+
+    res.json({ message: 'Password changed successfully!' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  getUserProfile,
+  updateProfile,
+  changePassword
+};

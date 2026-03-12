@@ -2,16 +2,16 @@ const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/authMiddleware');
 const {
-  register,
-  login,
-  getProfile,
+  registerUser,
+  loginUser,
+  getUserProfile,
   updateProfile,
   changePassword
 } = require('../controllers/authController');
 
-router.post('/register', register);
-router.post('/login', login);
-router.get('/profile', protect, getProfile);
+router.post('/register', registerUser);
+router.post('/login', loginUser);
+router.get('/profile', protect, getUserProfile);
 router.put('/update-profile', protect, updateProfile);
 router.put('/change-password', protect, changePassword);
 
