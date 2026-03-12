@@ -9,6 +9,8 @@ dotenv.config();
 connectDB();
 
 const app = express();
+app.set('trust proxy', 1); // ← ADD THIS LINE
+
 
 // Security headers
 app.use(helmet());
@@ -61,7 +63,7 @@ app.use('/api/scriptures', require('./routes/scriptureRoutes'));
 app.use('/api/quiz', require('./routes/quizRoutes'));
 app.use('/api/leaderboard', require('./routes/leaderboardRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
-
+app.use('/api/admin', require('./routes/adminRoutes'));
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
